@@ -16,42 +16,45 @@ datasource db {
 // USER -> MOVIE (1:N) -> WATCHLIST
 
 model User {
-  id String @id @default(uuid())
-  email String @unique
-  name String
-  password String
-  createdAt DateTime @default(now())
+  id        String          @id @default(uuid())
+  email     String          @unique
+  name      String
+  password  String
+  createdAt DateTime        @default(now())
+
+  movies    Movie[]         @relation("MovieCreator")
+  watchlist WatchListItem[]
 }
 
 model Movie {
-  id String @id @default(uuid())
-  tittle String
-  overview String?
-  releaseYear Int
-  genres String[] @default([])
-  runtime Int?
-  posterUrl String?
-  createdBy String
-  created DateTime @default(now())
+  id             String          @id @default(uuid())
+  title          String
+  overview       String?
+  releaseYear    Int
+  genres         String[]        @default([])
+  runtime        Int?
+  posterUrl      String?
+  createdBy      String
+  createdAt      DateTime        @default(now())
 
-  creator User @relation("MovieCreator", fields: [createdBy], references: [id], onDelete: Cascade)
-  WatchlistItems Watch
-
+  creator        User            @relation("MovieCreator", fields: [createdBy], references: [id], onDelete: Cascade)
+  watchlistItems WatchListItem[]
 }
 
 model WatchListItem {
-  id String @id @default(uuid())
-  userId String
-  movieId String
-  status WatchlistStatus @default(planned)
-  rating Int?
-  notes String?
-  createdAt DateTime @default(now())
-  updateAt DateTime @default(now())
+  id        String         @id @default(uuid())
+  userId    String
+  movieId   String
+  status    WatchlistStatus @default(planned)
+  rating    Int?
+  notes     String?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 
-  //relation
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  movie Movie @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movie     Movie          @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, movieId])
 }
 
 enum WatchlistStatus {

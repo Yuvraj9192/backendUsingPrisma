@@ -1,8 +1,11 @@
 import express from "express";
 import {config} from "dotenv";
+import cors from "cors";
 import movieRoutes from "./routes/movieRoutes.js";
-import {connectDB, disconnectDB} from "./config/db.js";
+import {connectDB} from "./config/db.js";
+import authRouter from "./routes/authRoutes.js";
 config();
+const app = express();
 
 try{
     if(!process.env.DATABASE_URL){
@@ -10,18 +13,21 @@ try{
     }
     connectDB();
 }catch(error){
-    disconnectDB();
+    // disconnectDB();
     console.log("error connecting to database", error);
 }
 
-const app = express();
+app.use(express.json());
+app.use(cors({
+    origin : "http://localhost:5137",
+}));
+app.use("/api/movie", movieRoutes);
+app.use("/api/user", authRouter);
 const port = 5001;
 
 app.get("/", (req, res) => {
     res.send("Route for home");
 })
-
-app.use("/api/movie", movieRoutes);
 
 app.listen(port, () => {
     console.log('server is running on port : ', port);
