@@ -3,6 +3,6 @@ import movieMethods from "../controllers/movieControllers.js";
 
 const movieRoutes = express.Router();
 
-movieRoutes.get("/home", movieMethods.getAllMovies);
+movieRoutes.get("/", movieMethods.getAllMovies);
 
 export default movieRoutes;

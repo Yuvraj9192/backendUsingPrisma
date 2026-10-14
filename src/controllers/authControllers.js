@@ -1,5 +1,6 @@
 import { prisma } from "../config/db.js";
 import hashPassGen from "../utils/passHash.js";
+// import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
@@ -90,12 +91,14 @@ const login = async (req, res) => {
       throw new Error("JWT_SECRET is not configured");
     }
 
-    // Generate stateless JWT
+    
     const token = jwt.sign(
       { userId: user.id },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
+
+    res.cookie("token", token); // setting token
 
     return res.status(200).json({
       message: "Login successful",
@@ -115,6 +118,14 @@ const login = async (req, res) => {
   }
 };
 
-const authMethod = { register, login };
+const logout = async (req, res) => {
+  res.cookie("token", "", {
+    httpOnly : true,
+    expiresIn: new Date(0),
+  });
+  res.redirect("/")
+}
+
+const authMethod = { register, login, logout };
 
 export default authMethod;
