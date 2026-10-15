@@ -126,12 +126,17 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-  res.cookie("token", "", {
-    httpOnly : true,
-    expiresIn: new Date(0),
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
   });
-  res.redirect("/")
-}
+
+  return res.status(200).json({
+    message: "Logout successful",
+  });
+};
 
 const authMethod = { register, login, logout };
 
