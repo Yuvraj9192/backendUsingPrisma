@@ -103,7 +103,7 @@ const login = async (req, res) => {
       secure: true,
       sameSite: "none",
       path: "/",
-      maxAge: 30 * 60 * 1000, // 30 minutes
+      maxAge: 30 * 60 * 1000,
     });
 
 
